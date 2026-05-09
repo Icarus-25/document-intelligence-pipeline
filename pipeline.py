@@ -44,19 +44,22 @@ def process_document(input_path: str | Path, output_dir: Path = Path("outputs"))
 
 
 def main():
-    documents = [
-        "docs/Test_Doc_1.pdf",
-        "docs/Test_Doc_2.docx",
-        "docs/Test_Doc_3.pdf",
-    ]
+    docs_dir = Path("docs")
+    
+    if not docs_dir.exists() or not docs_dir.is_dir():
+        logger.warning(f"⚠️ Docs folder not found: {docs_dir}")
+        return
+    
+    documents = sorted(list(docs_dir.glob("*.pdf")) + list(docs_dir.glob("*.docx")))
+    
+    if not documents:
+        logger.warning("⚠️ No PDF or DOCX files found in docs/")
+        return
     
     success = 0
     for doc in documents:
-        if Path(doc).exists():
-            if process_document(doc):
-                success += 1
-        else:
-            logger.warning(f"⚠️ File not found: {doc}")
+        if process_document(doc):
+            success += 1
     
     logger.info(f"Pipeline finished. Successfully processed {success}/{len(documents)} documents.")
 
