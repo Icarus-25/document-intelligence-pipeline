@@ -9,6 +9,31 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 def process_document(input_path: str | Path, output_dir: Path = Path("outputs")):
+    """
+    Process a single document using Docling and save structured outputs.
+    
+    This function converts a PDF or DOCX file into clean Markdown and JSON 
+    formats, preserving structure such as headers, lists, and tables.
+    
+    Args:
+        input_path (str | Path): Path to the input document (PDF or DOCX).
+        output_dir (Path, optional): Directory where output files will be saved.
+                                    Defaults to 'outputs/' folder.
+    
+    Returns:
+        bool: True if processing was successful, False if it failed.
+    
+    Side Effects:
+        - Creates the output directory if it doesn't exist.
+        - Saves two files in output_dir:
+            - {filename}.md          (Markdown version)
+            - {filename}.json        (Structured JSON version)
+        - On failure, creates {filename}_ERROR.md with error details.
+    
+    Note:
+        Uses Docling with table structure recognition enabled.
+        Gracefully handles errors and logs them.
+    """
     input_path = Path(input_path)
     output_dir.mkdir(exist_ok=True)
     
