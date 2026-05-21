@@ -37,9 +37,12 @@ def process_document(input_path: str | Path, output_dir: Path = Path("outputs"))
         return True
         
     except Exception as e:
-        logger.error(f"❌ Failed to process {input_path.name}: {e}")
+    logger.error(f"❌ Failed to process {input_path.name}: {e}", exc_info=True)
+        try:
         error_path = output_dir / f"{input_path.stem}_ERROR.md"
         error_path.write_text(f"# Error Processing {input_path.name}\n\nError: {str(e)}", encoding="utf-8")
+    except OSError:
+        logger.error("Could not write error file to output directory.")
         return False
 
 
